@@ -17,7 +17,7 @@ export const initProjectRoute = (
     createRoute({
       method: "post",
       tags: ["Project"],
-      security: [{ bearerAuth: [] }],
+      security: [{ Bearer: [] }],
       path: "/",
       request: {
         body: {

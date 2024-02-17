@@ -21,7 +21,7 @@ export const initCompanyRoute = (
       method: "post",
       tags: ["Company"],
       description: "Create a new company",
-      security: [{ bearerAuth: [] }],
+      security: [{ Bearer: [] }],
       path: "/",
       request: {
         body: {
@@ -66,7 +66,7 @@ export const initCompanyRoute = (
       method: "get",
       tags: ["Company"],
       description: "List companies",
-      security: [{ bearerAuth: [] }],
+      security: [{ Bearer: [] }],
       path: "/",
       request: {
         query: paginationSchema,
