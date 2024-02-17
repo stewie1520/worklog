@@ -3,3 +3,8 @@ export type CreateProjectParams = {
   name: string;
   companyId: string;
 };
+
+export type ProjectListResponse = {
+  id: string;
+  name: string;
+};

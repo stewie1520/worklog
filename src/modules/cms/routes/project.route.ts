@@ -2,6 +2,10 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
 import { Config } from "@/shared/config";
 import { requireAuth } from "@/shared/middlewares";
+import {
+  paginationOutputSchema,
+  paginationSchema,
+} from "@/shared/validation/pagination";
 
 import { ProjectService } from "../ports/services/project";
 
@@ -17,6 +21,7 @@ export const initProjectRoute = (
     createRoute({
       method: "post",
       tags: ["Project"],
+      description: "Create a new project",
       security: [{ Bearer: [] }],
       path: "/",
       request: {
@@ -34,6 +39,13 @@ export const initProjectRoute = (
       },
       responses: {
         201: {
+          content: {
+            "application/json": {
+              schema: z.object({
+                id: z.string(),
+              }),
+            },
+          },
           description: "Project created",
         },
         500: {
@@ -58,10 +70,62 @@ export const initProjectRoute = (
       });
 
       if (result.ok) {
-        return c.json(result.data, 201);
+        return c.json(
+          {
+            id: result.data!.id,
+          },
+          201,
+        );
       }
 
-      return c.json(result, 500);
+      return c.json(
+        {
+          message: result.message!,
+        },
+        500,
+      );
+    },
+  );
+
+  route.openapi(
+    createRoute({
+      method: "get",
+      tags: ["Project"],
+      description: "List of projects",
+      security: [{ Bearer: [] }],
+      path: "/",
+      request: {
+        query: paginationSchema.extend({
+          companyId: z.string().uuid(),
+        }),
+      },
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              schema: paginationOutputSchema.extend({
+                data: z.array(
+                  z.object({
+                    id: z.string(),
+                    name: z.string(),
+                  }),
+                ),
+              }),
+            },
+          },
+          description: "List of projects",
+        },
+      },
+    }),
+    async (c) => {
+      const { companyId, ...paginationParams } = c.req.valid("query");
+
+      const result = await projectService.listByCompany(
+        companyId,
+        paginationParams,
+      );
+
+      return c.json(result, 200);
     },
   );
 

@@ -39,6 +39,13 @@ export const initCompanyRoute = (
       responses: {
         201: {
           description: "Company created",
+          content: {
+            "application/json": {
+              schema: z.object({
+                id: z.string(),
+              }),
+            },
+          },
         },
         500: {
           content: {
@@ -55,9 +62,21 @@ export const initCompanyRoute = (
     async (c) => {
       const jwtPayload = c.get("jwtPayload");
 
-      await companyService.create(jwtPayload.id, c.req.valid("json"));
+      const result = await companyService.create(
+        jwtPayload.id,
+        c.req.valid("json"),
+      );
 
-      return c.json(undefined, 201);
+      if (!result.ok) {
+        return c.json({ message: result.message! }, 500);
+      }
+
+      return c.json(
+        {
+          id: result.data!.id,
+        },
+        201,
+      );
     },
   );
 

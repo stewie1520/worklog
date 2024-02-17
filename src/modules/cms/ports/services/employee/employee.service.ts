@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { inject, injectable } from "inversify";
 
+import { Logger } from "@/shared/logger";
 import { PasswordService } from "@/shared/services/password.service";
 import { JwtTokenService, TokenService } from "@/shared/services/token.service";
 
@@ -13,33 +14,42 @@ export class EmployeeService {
     @inject(EmployeeRepository) private employeeRepository: EmployeeRepository,
     @inject(PasswordService) private passwordService: PasswordService,
     @inject(TokenService) private tokenService: JwtTokenService,
+    @inject(Logger) private logger: Logger,
   ) {}
 
   public async signInWithPassword(email: string, password: string) {
-    const user = await this.employeeRepository.getUserByEmail(email);
-    if (!user) {
+    try {
+      const user = await this.employeeRepository.getUserByEmail(email);
+      if (!user) {
+        return {
+          ok: false,
+          message: "User not found",
+        };
+      }
+
+      if (
+        !(await this.passwordService.comparePassword(password, user.password))
+      ) {
+        return {
+          ok: false,
+          message: "Invalid password",
+        };
+      }
+
+      const token = await this.tokenService.signToken({ id: user.id });
+      return {
+        ok: true,
+        data: {
+          token,
+        },
+      };
+    } catch (error) {
+      this.logger.error(error);
       return {
         ok: false,
-        message: "User not found",
+        message: "Error signing in",
       };
     }
-
-    if (
-      !(await this.passwordService.comparePassword(password, user.password))
-    ) {
-      return {
-        ok: false,
-        message: "Invalid password",
-      };
-    }
-
-    const token = await this.tokenService.signToken({ id: user.id });
-    return {
-      ok: true,
-      data: {
-        token,
-      },
-    };
   }
 
   public async signUpWithPassword(
@@ -47,50 +57,66 @@ export class EmployeeService {
     password: string,
     name: string,
   ) {
-    const user = await this.employeeRepository.getUserByEmail(email);
-    if (user) {
+    try {
+      const user = await this.employeeRepository.getUserByEmail(email);
+      if (user) {
+        return {
+          ok: false,
+          message: "User already exists",
+        };
+      }
+
+      const hashedPassword = await this.passwordService.hashPassword(password);
+
+      const newUser = await this.employeeRepository.createUser(
+        new Employee({
+          id: randomUUID(),
+          name,
+          email,
+          password: hashedPassword,
+        }),
+      );
+
+      const token = await this.tokenService.signToken({ id: newUser.id });
+      return {
+        ok: true,
+        data: {
+          token,
+        },
+      };
+    } catch (error) {
+      this.logger.error(error);
       return {
         ok: false,
-        message: "User already exists",
+        message: "Error signing up",
       };
     }
-
-    const hashedPassword = await this.passwordService.hashPassword(password);
-
-    const newUser = await this.employeeRepository.createUser(
-      new Employee({
-        id: randomUUID(),
-        name,
-        email,
-        password: hashedPassword,
-      }),
-    );
-
-    const token = await this.tokenService.signToken({ id: newUser.id });
-    return {
-      ok: true,
-      data: {
-        token,
-      },
-    };
   }
 
   public async getPrivateEmployeeData(id: string) {
-    const user = await this.employeeRepository.getUserById(id);
-    if (!user) {
+    try {
+      const user = await this.employeeRepository.getUserById(id);
+      if (!user) {
+        return {
+          ok: false,
+          message: "User not found",
+        };
+      }
+
+      return {
+        ok: true,
+        data: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+      };
+    } catch (error) {
+      this.logger.error(error);
       return {
         ok: false,
-        message: "User not found",
+        message: "Error getting user data",
       };
     }
-
-    return {
-      ok: true,
-      data: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-    };
   }
 }

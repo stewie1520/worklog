@@ -5,11 +5,8 @@ import { DependencyRegistry } from "@/types";
 import { BcryptPasswordService, PasswordService } from "./password.service";
 import { JwtTokenService, TokenService } from "./token.service";
 
-export const sharedServicesRegistry: DependencyRegistry = (config) =>
+export const sharedServicesRegistry: DependencyRegistry = () =>
   new ContainerModule((bind) => {
-    // FIXME: add spec class here
-    bind(PasswordService).to(
-      config.isTest ? BcryptPasswordService : BcryptPasswordService,
-    );
+    bind(PasswordService).to(BcryptPasswordService);
     bind(TokenService).to(JwtTokenService);
   });
