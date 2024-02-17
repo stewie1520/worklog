@@ -4,6 +4,7 @@ import { DataType, newDb } from "pg-mem";
 import { Sequelize } from "sequelize";
 
 import { Config } from "@/shared/config";
+import { createLogger, Logger } from "@/shared/logger";
 import { sharedServicesLoader } from "@/shared/services/shared-services.module";
 import { DependencyLoader } from "@/types";
 
@@ -23,6 +24,9 @@ export class TestService {
 
     const sequelize = this.connectDb();
     testContainer.bind(Sequelize).toConstantValue(sequelize);
+
+    const logger = createLogger(testConfig);
+    testContainer.bind(Logger).toConstantValue(logger);
 
     testContainer.load(
       sharedServicesLoader(testConfig),
