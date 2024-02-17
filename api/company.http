@@ -1,0 +1,16 @@
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRlMTRhNjk5LTI0OGItNDkzYS05MWExLTg0YmY4NmFjYjVlNiIsImV4cCI6MTcwODA5NTUzNH0.bs7t_F_eFnqUIVGB7VQl4U-AJJE0IjtrE1KNZ_y9lOk
+
+###
+POST {{baseUrl}}/api/v1/companies HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Worklog",
+  "baseDomain": "worklog.co"
+}
+
+###
+GET {{baseUrl}}/api/v1/companies/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

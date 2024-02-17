@@ -1,0 +1,24 @@
+###
+POST {{baseUrl}}/api/v1/employees/sign-in HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "test@circel.xyz",
+  "password": "password1234"
+}
+
+###
+POST {{baseUrl}}/api/v1/employees/sign-up HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "test@circel.xyz",
+  "password": "password1234",
+  "name": "Hieu Dong"
+}
+
+###
+GET {{baseUrl}}/api/v1/employees/me HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRlMTRhNjk5LTI0OGItNDkzYS05MWExLTg0YmY4NmFjYjVlNiIsImV4cCI6MTcwODAyMTIzM30.NK--pLJStOxgENEVeXjJiK97KT8dw0G9H0r6m8wGMKQ
+
