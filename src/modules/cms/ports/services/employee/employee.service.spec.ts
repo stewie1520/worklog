@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize";
 
 import { TestService } from "@/test/test.service";
 
-import { dependencyRegistry, loadModels } from "../../../cms.module";
+import { loadDependencies, loadModels } from "../../../cms.module";
 import { EmployeeService } from "./employee.service";
 
 describe(EmployeeService.name, () => {
@@ -11,7 +11,7 @@ describe(EmployeeService.name, () => {
   let dataSource: Sequelize;
 
   beforeAll(async () => {
-    testContainer = TestService.createTestContainer(dependencyRegistry);
+    testContainer = TestService.createTestContainer(loadDependencies);
     dataSource = testContainer.get(Sequelize);
     loadModels(dataSource);
     await dataSource.sync({ force: true });

@@ -4,11 +4,11 @@ import { DataType, newDb } from "pg-mem";
 import { Sequelize } from "sequelize";
 
 import { Config } from "@/shared/config";
-import { sharedServicesRegistry } from "@/shared/services/shared-services.module";
-import { DependencyRegistry } from "@/types";
+import { sharedServicesLoader } from "@/shared/services/shared-services.module";
+import { DependencyLoader } from "@/types";
 
 export class TestService {
-  static createTestContainer(...registries: DependencyRegistry[]) {
+  static createTestContainer(...dependencyLoaders: DependencyLoader[]) {
     const testConfig = new Config({
       DB_NAME: process.env.DB_NAME,
       DB_USERNAME: process.env.DB_USERNAME,
@@ -25,8 +25,8 @@ export class TestService {
     testContainer.bind(Sequelize).toConstantValue(sequelize);
 
     testContainer.load(
-      sharedServicesRegistry(testConfig),
-      ...registries.map((registry) => registry(testConfig)),
+      sharedServicesLoader(testConfig),
+      ...dependencyLoaders.map((depLoader) => depLoader(testConfig)),
     );
 
     return testContainer;

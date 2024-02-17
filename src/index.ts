@@ -10,7 +10,7 @@ import cms from "./modules/cms/cms.module";
 import { Config, loadConfig } from "./shared/config";
 import { createLogger, Logger } from "./shared/logger";
 import { addMiddlewares, setupSwaggerUi } from "./shared/middlewares";
-import { sharedServicesRegistry } from "./shared/services/shared-services.module";
+import { sharedServicesLoader } from "./shared/services/shared-services.module";
 
 const main = async () => {
   const config = await loadConfig();
@@ -21,7 +21,7 @@ const main = async () => {
   container.bind(Config).toConstantValue(config);
   container.bind(Sequelize).toConstantValue(db);
   container.bind(Logger).toConstantValue(logger);
-  container.load(sharedServicesRegistry(config));
+  container.load(sharedServicesLoader(config));
 
   const app = new OpenAPIHono();
 

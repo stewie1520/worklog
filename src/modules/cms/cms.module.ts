@@ -1,12 +1,11 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { ContainerModule } from "inversify";
-import { Sequelize } from "sequelize";
 
 import { Config } from "@/shared/config";
 import {
-  DependencyRegistry,
+  DependencyLoader,
+  ModelLoader,
   ModuleActivator,
-  ResolveOnlyContainer,
+  RouteLoader,
 } from "@/types";
 
 import { SequelizeCompanyRepository } from "./adapters/repositories/sequelize-company.repository";
@@ -26,7 +25,7 @@ import { initCompanyRoute } from "./routes/company.route";
 import { initEmployeeRoute } from "./routes/employee.route";
 import { initProjectRoute } from "./routes/project.route";
 
-export const dependencyRegistry: DependencyRegistry = () =>
+export const loadDependencies: DependencyLoader = () =>
   new ContainerModule((bind) => {
     // repositories
     bind(EmployeeRepository).to(SequelizeEmployeeRepository);
@@ -39,10 +38,7 @@ export const dependencyRegistry: DependencyRegistry = () =>
     bind(ProjectService).toSelf();
   });
 
-export const loadRoutes = (
-  app: OpenAPIHono,
-  container: ResolveOnlyContainer,
-) => {
+export const loadRoutes: RouteLoader = (app, container) => {
   const config = container.get(Config);
 
   app.route(
@@ -61,7 +57,7 @@ export const loadRoutes = (
   );
 };
 
-export const loadModels = (db: Sequelize) => {
+export const loadModels: ModelLoader = (db) => {
   initEmployee(db);
   initCompany(db);
   initProject(db);
@@ -70,7 +66,7 @@ export const loadModels = (db: Sequelize) => {
 };
 
 export const activateModule: ModuleActivator = (app, container, config, db) => {
-  container.load(dependencyRegistry(config));
+  container.load(loadDependencies(config));
   loadRoutes(app, container);
   loadModels(db);
 };

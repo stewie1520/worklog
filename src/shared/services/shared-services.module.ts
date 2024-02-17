@@ -1,11 +1,11 @@
 import { ContainerModule } from "inversify";
 
-import { DependencyRegistry } from "@/types";
+import { DependencyLoader } from "@/types";
 
 import { BcryptPasswordService, PasswordService } from "./password.service";
 import { JwtTokenService, TokenService } from "./token.service";
 
-export const sharedServicesRegistry: DependencyRegistry = () =>
+export const sharedServicesLoader: DependencyLoader = () =>
   new ContainerModule((bind) => {
     bind(PasswordService).to(BcryptPasswordService);
     bind(TokenService).to(JwtTokenService);
