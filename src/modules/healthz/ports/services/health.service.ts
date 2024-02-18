@@ -5,7 +5,14 @@ import { Sequelize } from "sequelize";
 export class HealthService {
   constructor(@inject(Sequelize) private readonly db: Sequelize) {}
 
-  public async checkHealth() {
+  public async checkLive() {
+    return {
+      ok: true,
+      message: "Service is live",
+    };
+  }
+
+  public async checkReady() {
     const dbOk = await this.db
       .authenticate({ retry: { max: 3 } })
       .then(() => true)
@@ -20,7 +27,7 @@ export class HealthService {
 
     return {
       ok: true,
-      message: "Service is healthy",
+      message: "Service is ready",
     };
   }
 }

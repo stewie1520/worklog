@@ -9,8 +9,8 @@ export const initHealthRoute = (healthService: HealthService) => {
     createRoute({
       method: "get",
       tags: ["Healthz"],
-      description: "Get health status",
-      path: "/",
+      description: "Check liveness",
+      path: "/live",
       responses: {
         200: {
           content: {
@@ -26,7 +26,33 @@ export const initHealthRoute = (healthService: HealthService) => {
       },
     }),
     async (c) => {
-      const result = await healthService.checkHealth();
+      const result = await healthService.checkLive();
+      return c.json(result, 201);
+    },
+  );
+
+  route.openapi(
+    createRoute({
+      method: "get",
+      tags: ["Healthz"],
+      description: "Check readiness",
+      path: "/ready",
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              schema: z.object({
+                ok: z.boolean(),
+                message: z.string().optional(),
+              }),
+            },
+          },
+          description: "Status OK",
+        },
+      },
+    }),
+    async (c) => {
+      const result = await healthService.checkReady();
       return c.json(result, 201);
     },
   );
