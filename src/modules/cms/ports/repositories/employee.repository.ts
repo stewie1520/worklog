@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { Employee } from "../../models/employee.model";
+import { Employee } from "../../models";
 
 @injectable()
 export abstract class EmployeeRepository {

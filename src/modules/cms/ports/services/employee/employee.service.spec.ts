@@ -1,9 +1,10 @@
 import { Container } from "inversify";
 import { Sequelize } from "sequelize";
 
+import { loadModels } from "@/modules/cms/models";
 import { TestService } from "@/test/test.service";
 
-import { loadDependencies, loadModels } from "../../../cms.module";
+import { loadDependencies } from "../../../cms.module";
 import { EmployeeService } from "./employee.service";
 
 describe(EmployeeService.name, () => {

@@ -6,8 +6,8 @@ import { Container } from "inversify";
 import { Sequelize } from "sequelize";
 
 import { connectDatabase } from "./database/connect";
-import cms from "./modules/cms/cms.module";
-import health from "./modules/healthz/health.module";
+import cmsModule from "./modules/cms/cms.module";
+import healthModule from "./modules/healthz/health.module";
 import { Config, loadConfig } from "./shared/config";
 import { createLogger, Logger } from "./shared/logger";
 import { addMiddlewares, setupSwaggerUi } from "./shared/middlewares";
@@ -29,8 +29,8 @@ const main = async () => {
   const api = app.basePath("/api/v1");
   addMiddlewares(api, config);
 
-  cms.activateModule(api, container, config, db);
-  health.activateModule(api, container, config, db);
+  cmsModule.activateModule(api, container, config, db);
+  healthModule.activateModule(api, container, config, db);
 
   setupSwaggerUi(api);
 

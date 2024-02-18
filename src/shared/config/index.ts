@@ -10,6 +10,7 @@ const schema = z.object({
   DB_HOST: z.string(),
   DB_PORT: z.preprocess(Number, z.number()),
   JWT_SECRET: z.string(),
+  GCP_CREDENTIALS: z.any(),
 });
 
 @injectable()
@@ -21,6 +22,7 @@ export class Config {
   readonly DB_PORT!: number;
 
   readonly JWT_SECRET!: string;
+  readonly GCP_CREDENTIALS!: Record<string, string>;
 
   constructor(envs: Record<string, unknown>) {
     const parsedProcessEnv = schema.safeParse(envs);
@@ -66,10 +68,12 @@ const readVaults = async (): Promise<z.infer<typeof schema>> => {
 
     vault.token = login.auth.client_token;
 
-    const [{ data: pgEnv }, { data: commonEnv }] = await Promise.all([
-      vault.read("kv/data/pg/webapp"),
-      vault.read("kv/data/common/webapp"),
-    ]);
+    const [{ data: pgEnv }, { data: commonEnv }, { data: gcpKey }] =
+      await Promise.all([
+        vault.read("kv/data/pg/webapp"),
+        vault.read("kv/data/common/webapp"),
+        vault.read("kv/data/gcp/key"),
+      ]);
 
     return {
       DB_NAME: pgEnv.db_name,
@@ -78,6 +82,7 @@ const readVaults = async (): Promise<z.infer<typeof schema>> => {
       DB_HOST: pgEnv.db_host,
       DB_PORT: pgEnv.db_port,
       JWT_SECRET: commonEnv.jwt_secret,
+      GCP_CREDENTIALS: gcpKey,
     };
   } catch (e: unknown) {
     console.error("Error extracting env from vault", (e as Error).message);

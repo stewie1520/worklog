@@ -1,20 +1,12 @@
 import { ContainerModule } from "inversify";
 
 import { Config } from "@/shared/config";
-import {
-  DependencyLoader,
-  ModelLoader,
-  ModuleActivator,
-  RouteLoader,
-} from "@/types";
+import { DependencyLoader, ModuleActivator, RouteLoader } from "@/types";
 
 import { SequelizeCompanyRepository } from "./adapters/repositories/sequelize-company.repository";
 import { SequelizeEmployeeRepository } from "./adapters/repositories/sequelize-employee.repository";
 import { SequelizeProjectRepository } from "./adapters/repositories/sequelize-project.repository";
-import { initCompany } from "./models/company.model";
-import { initEmployee } from "./models/employee.model";
-import { initProject } from "./models/project.model";
-import { initRelation } from "./models/relation";
+import { loadModels } from "./models";
 import { CompanyRepository } from "./ports/repositories/company.repository";
 import { EmployeeRepository } from "./ports/repositories/employee.repository";
 import { ProjectRepository } from "./ports/repositories/project.repository";
@@ -55,14 +47,6 @@ export const loadRoutes: RouteLoader = (app, container) => {
     "projects",
     initProjectRoute(container.get(ProjectService), config),
   );
-};
-
-export const loadModels: ModelLoader = (db) => {
-  initEmployee(db);
-  initCompany(db);
-  initProject(db);
-
-  initRelation();
 };
 
 export const activateModule: ModuleActivator = (app, container, config, db) => {

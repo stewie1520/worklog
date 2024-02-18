@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 
 import { IPaginationParams, PaginationResponse } from "@/types";
 
-import { Company } from "../../models/company.model";
+import { Company } from "../../models";
 import { CompanyListData } from "./company.definition";
 
 @injectable()

@@ -20,6 +20,9 @@ dependencies:
   bcrypt:
     specifier: ^5.1.1
     version: 5.1.1
+  convert:
+    specifier: ^4.14.1
+    version: 4.14.1
   dotenv:
     specifier: ^16.4.3
     version: 16.4.3
@@ -2055,6 +2058,10 @@ packages:
   /convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
     dev: true
+
+  /convert@4.14.1:
+    resolution: {integrity: sha512-haeYUERJCdvILEfZC2OHZd8JIIvU6Kl93zfDrDCG3dvws4icuWC2D5O7jyaKh8vjECdfkWkVB6qDycQpGhWWSA==}
+    dev: false
 
   /core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}

@@ -11,12 +11,12 @@ export const initEmployeeRoute = (
 ) => {
   const route = new OpenAPIHono();
 
-  // Sign in user with email
   route.openapi(
     createRoute({
       method: "post",
       tags: ["Employee"],
       path: "/sign-in",
+      description: "Sign in user with email",
       request: {
         body: {
           required: true,
@@ -81,12 +81,12 @@ export const initEmployeeRoute = (
     },
   );
 
-  // Sign up new user with email
   route.openapi(
     createRoute({
       method: "post",
       tags: ["Employee"],
       path: "/sign-up",
+      description: "Sign up new user with email",
       request: {
         body: {
           required: true,
@@ -158,12 +158,12 @@ export const initEmployeeRoute = (
 
   route.use(requireAuth(config));
 
-  // Get private employee data
   route.openapi(
     createRoute({
       security: [{ Bearer: [] }],
       method: "get",
       tags: ["Employee"],
+      description: "Get private employee data",
       path: "/me",
       responses: {
         200: {
@@ -209,6 +209,59 @@ export const initEmployeeRoute = (
             id: result.data!.id,
             name: result.data!.name,
             email: result.data!.email,
+          },
+          200,
+        );
+      }
+
+      return c.json(
+        {
+          message: result.message!,
+        },
+        500,
+      );
+    },
+  );
+
+  route.openapi(
+    createRoute({
+      path: "/me/presign-pfp-url",
+      method: "get",
+      tags: ["Employee"],
+      security: [{ Bearer: [] }],
+      description: "Get presigned url for pfp upload",
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              schema: z.object({
+                url: z.string(),
+              }),
+            },
+          },
+          description: "Presigned url",
+        },
+        500: {
+          content: {
+            "application/json": {
+              schema: z.object({
+                message: z.string(),
+              }),
+            },
+          },
+          description: "Internal server error",
+        },
+      },
+    }),
+    async (c) => {
+      const payload = c.get("jwtPayload");
+
+      const result = await employeeService.getPfpUploadUrl(payload.id);
+
+      if (result.ok) {
+        return c.json(
+          {
+            url: result.data!.url,
           },
           200,
         );

@@ -17,6 +17,7 @@ export class TestService {
       DB_HOST: process.env.DB_HOST,
       DB_PORT: Number(process.env.DB_PORT),
       JWT_SECRET: process.env.JWT_SECRET,
+      GCP_CREDENTIALS: {},
     });
 
     const testContainer = new Container();

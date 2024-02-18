@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 
 import { IPaginationParams, PaginationResponse } from "@/types";
 
-import { Project } from "../../models/project.model";
+import { Project } from "../../models";
 import { ProjectListData } from "./project.definition";
 
 @injectable()

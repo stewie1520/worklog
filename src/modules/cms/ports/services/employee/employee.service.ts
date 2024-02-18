@@ -4,8 +4,9 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@/shared/logger";
 import { PasswordService } from "@/shared/services/password.service";
 import { JwtTokenService, TokenService } from "@/shared/services/token.service";
+import { UploadService } from "@/shared/services/upload";
 
-import { Employee } from "../../../models/employee.model";
+import { Employee } from "../../../models";
 import { EmployeeRepository } from "../../repositories/employee.repository";
 
 @injectable()
@@ -14,6 +15,7 @@ export class EmployeeService {
     @inject(EmployeeRepository) private employeeRepository: EmployeeRepository,
     @inject(PasswordService) private passwordService: PasswordService,
     @inject(TokenService) private tokenService: JwtTokenService,
+    @inject(UploadService) private uploadService: UploadService,
     @inject(Logger) private logger: Logger,
   ) {}
 
@@ -116,6 +118,31 @@ export class EmployeeService {
       return {
         ok: false,
         message: "Error getting user data",
+      };
+    }
+  }
+
+  public async getPfpUploadUrl(id: string) {
+    try {
+      const pfpFilename = `pfp-${id}-${Date.now()}.png`;
+      const url = await this.uploadService.getPresignedUrl(
+        "worklog-pfp",
+        pfpFilename,
+        5,
+        "image/*",
+      );
+      return {
+        ok: true,
+        data: {
+          url,
+        },
+      };
+    } catch (error) {
+      this.logger.error(error);
+
+      return {
+        ok: false,
+        message: "Error getting pfp upload url",
       };
     }
   }

@@ -16,7 +16,6 @@ export const initProjectRoute = (
   const route = new OpenAPIHono();
   route.use(requireAuth(config));
 
-  // Create new project
   route.openapi(
     createRoute({
       method: "post",

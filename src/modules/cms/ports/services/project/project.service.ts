@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@/shared/logger";
 import { IPaginationParams, PaginationResponse } from "@/types";
 
-import { Project } from "../../../models/project.model";
+import { Project } from "../../../models";
 import { CompanyRepository } from "../../repositories/company.repository";
 import { ProjectRepository } from "../../repositories/project.repository";
 import { CreateProjectParams, ProjectListResponse } from "./project.definition";

@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@/shared/logger";
 import { IPaginationParams, PaginationResponse } from "@/types";
 
-import { Company } from "../../../models/company.model";
+import { Company } from "../../../models";
 import { CompanyRepository } from "../../repositories/company.repository";
 import { CompanyListResponse, CreateCompanyParams } from "./company.definition";
 
