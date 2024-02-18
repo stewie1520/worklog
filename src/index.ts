@@ -7,6 +7,7 @@ import { Sequelize } from "sequelize";
 
 import { connectDatabase } from "./database/connect";
 import cms from "./modules/cms/cms.module";
+import health from "./modules/healthz/health.module";
 import { Config, loadConfig } from "./shared/config";
 import { createLogger, Logger } from "./shared/logger";
 import { addMiddlewares, setupSwaggerUi } from "./shared/middlewares";
@@ -29,6 +30,7 @@ const main = async () => {
   addMiddlewares(api, config);
 
   cms.activateModule(api, container, config, db);
+  health.activateModule(api, container, config, db);
 
   setupSwaggerUi(api);
 
