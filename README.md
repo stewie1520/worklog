@@ -27,12 +27,22 @@ vault read auth/approle/worklog-role/role-id
 vault write -f auth/approle/role/worklog-role/secret-id
 ```
 
+#### PostgreSQL
+
 ```sh
 vault kv put "kv/data/pg/webapp" db_name="worklog" db_username="user" db_password="password" db_host="localhost" db_port="5432"
 ```
 
+#### Common
+
 ```sh
 vault kv put "kv/data/common/webapp" jwt_secret="supers3cr3t"
+```
+
+#### GCP
+
+```sh
+echo '<JSON Service Account>' | vault write "kv/data/gcp/key" @/dev/stdin
 ```
 
 ## 💾 Sequelize migration
